@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import ContestantCard from './ContestantCard'
 import GlobalTimer from './GlobalTimer'
 
@@ -12,13 +12,24 @@ export default function Arena({
   onReset,
 }) {
   const [showResetConfirm, setShowResetConfirm] = useState(false)
+  const [search, setSearch] = useState('')
 
   const elapsedMs = now - contestStartTime
   const contestOver = elapsedMs >= durationMs
 
-  const finished = rankedContestants.filter(c => c.finishedAt)
-  const active = rankedContestants.filter(c => !c.finishedAt && !c.disqualified && !contestOver)
-  const failed = rankedContestants.filter(c => c.disqualified || (!c.finishedAt && contestOver))
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase()
+    if (!q) return rankedContestants
+    return rankedContestants.filter(c => c.name.toLowerCase().includes(q))
+  }, [rankedContestants, search])
+
+  const finished = filtered.filter(c => c.finishedAt)
+  const active   = filtered.filter(c => !c.finishedAt && !c.disqualified && !contestOver)
+  const failed   = filtered.filter(c => c.disqualified || (!c.finishedAt && contestOver))
+
+  const totalCount    = rankedContestants.length
+  const filteredCount = filtered.length
+  const isSearching   = search.trim().length > 0
 
   return (
     <div className="arena-screen">
@@ -27,6 +38,41 @@ export default function Arena({
         durationMs={durationMs}
         contestOver={contestOver}
       />
+
+      {/* Search bar — only shown when there are enough contestants to warrant it */}
+      {totalCount >= 5 && (
+        <div className="search-bar-wrap">
+          <div className="search-bar">
+            <span className="search-icon">🔍</span>
+            <input
+              className="search-input"
+              type="text"
+              placeholder="Search for a warrior..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
+            {isSearching && (
+              <button className="search-clear" onClick={() => setSearch('')} title="Clear search">
+                ✕
+              </button>
+            )}
+          </div>
+          {isSearching && (
+            <p className="search-results-hint">
+              {filteredCount === 0
+                ? 'No warriors found.'
+                : `Showing ${filteredCount} of ${totalCount} warriors`}
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* No results state */}
+      {isSearching && filteredCount === 0 && (
+        <div className="no-results">
+          <p>⚔ No warrior by that name has entered the arena.</p>
+        </div>
+      )}
 
       {/* Leaderboard - Finished */}
       {finished.length > 0 && (
