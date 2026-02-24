@@ -39,7 +39,7 @@ export default function Arena({
         contestOver={contestOver}
       />
 
-      {/* Search bar — only shown when there are enough contestants to warrant it */}
+      {/* Søkefelt — vises kun naar der er nok deltagere */}
       {totalCount >= 5 && (
         <div className="search-bar-wrap">
           <div className="search-bar">
@@ -47,12 +47,12 @@ export default function Arena({
             <input
               className="search-input"
               type="text"
-              placeholder="Search for a warrior..."
+              placeholder="Søk efter en Kriger..."
               value={search}
               onChange={e => setSearch(e.target.value)}
             />
             {isSearching && (
-              <button className="search-clear" onClick={() => setSearch('')} title="Clear search">
+              <button className="search-clear" onClick={() => setSearch('')} title="Rydd Søk">
                 ✕
               </button>
             )}
@@ -60,24 +60,24 @@ export default function Arena({
           {isSearching && (
             <p className="search-results-hint">
               {filteredCount === 0
-                ? 'No warriors found.'
-                : `Showing ${filteredCount} of ${totalCount} warriors`}
+                ? 'Ingen Krigere funnet.'
+                : `Viser ${filteredCount} af ${totalCount} Krigere`}
             </p>
           )}
         </div>
       )}
 
-      {/* No results state */}
+      {/* Ingen resultater */}
       {isSearching && filteredCount === 0 && (
         <div className="no-results">
-          <p>⚔ No warrior by that name has entered the arena.</p>
+          <p>⚔ Ingen Kriger ved dette Navn hath indtaget Arenaen.</p>
         </div>
       )}
 
-      {/* Leaderboard - Finished */}
+      {/* Fullbragt */}
       {finished.length > 0 && (
         <section className="arena-section">
-          <h2 className="section-title glory">⚔ Hall of Glory ⚔</h2>
+          <h2 className="section-title glory">⚔ Ærens Hal ⚔</h2>
           <div className="cards-grid">
             {finished.map((c, i) => (
               <ContestantCard
@@ -92,10 +92,10 @@ export default function Arena({
         </section>
       )}
 
-      {/* Active */}
+      {/* Drikker endnu */}
       {active.length > 0 && (
         <section className="arena-section">
-          <h2 className="section-title active-title">⏳ Still Drinking ⏳</h2>
+          <h2 className="section-title active-title">⏳ Drikker Endnu ⏳</h2>
           <div className="cards-grid">
             {active.map(c => (
               <ContestantCard
@@ -112,7 +112,7 @@ export default function Arena({
         </section>
       )}
 
-      {/* Failed */}
+      {/* Hestemann */}
       {failed.length > 0 && (
         <section className="arena-section">
           <h2 className="section-title shame">🐴 Hestemann 🐴</h2>
@@ -136,20 +136,20 @@ export default function Arena({
             className="medieval-btn reset-btn"
             onClick={() => setShowResetConfirm(true)}
           >
-            ↩ New Contest
+            ↩ Ny Turnering
           </button>
         ) : (
           <div className="confirm-reset">
-            <p>Art thou certain? All progress shall be lost.</p>
+            <p>Er I visse? Alt Fremgang vil gaa tabt.</p>
             <div className="confirm-btns">
               <button className="medieval-btn danger-btn" onClick={onReset}>
-                Aye, reset!
+                Ja visselig, nullstill!
               </button>
               <button
                 className="medieval-btn"
                 onClick={() => setShowResetConfirm(false)}
               >
-                Nay, continue
+                Nei, Fortsett
               </button>
             </div>
           </div>

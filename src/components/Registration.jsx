@@ -9,11 +9,11 @@ export default function Registration({ contestants, onAdd, onRemove, onStart }) 
     e.preventDefault()
     const trimmed = name.trim()
     if (!trimmed) {
-      setError('A name is required, brave soul.')
+      setError('Et Navn er fornødent, tappre Sjæl.')
       return
     }
     if (contestants.some(c => c.name.toLowerCase() === trimmed.toLowerCase())) {
-      setError('This warrior has already entered the arena.')
+      setError('Denne Kriger hath allerede indtaget Arenaen.')
       return
     }
     onAdd(trimmed, gender)
@@ -24,12 +24,12 @@ export default function Registration({ contestants, onAdd, onRemove, onStart }) 
   return (
     <div className="registration-screen">
       <div className="scroll-panel">
-        <h2 className="panel-title">⚜ Enlist Your Warriors ⚜</h2>
+        <h2 className="panel-title">⚜ Innskriv Eders Krigere ⚜</h2>
         <p className="panel-desc">
-          Each warrior must consume one litre of Faxe (10% ABV) within the hour.
-          Those who succeed become <em>Faxeridder</em>. The first male earns the
-          title of <strong>Faxekonge</strong>, the first female —{' '}
-          <strong>Faxedronning</strong>. Those who fail… become{' '}
+          Hver Kriger maa fortære een Litre Faxe (10% Styrke) inden Timens Udløb.
+          De som lykkes, hædres med Titelen <em>Faxeridder</em>. Den første Herre
+          erholder Titelen <strong>Faxekonge</strong>, og den første Dame —{' '}
+          <strong>Faxedronning</strong>. De som ei formaar det… blive{' '}
           <em>Hestemann</em>.
         </p>
 
@@ -38,7 +38,7 @@ export default function Registration({ contestants, onAdd, onRemove, onStart }) 
             <input
               className="medieval-input"
               type="text"
-              placeholder="Warrior's name..."
+              placeholder="Krigerens Navn..."
               value={name}
               onChange={e => { setName(e.target.value); setError('') }}
               maxLength={30}
@@ -49,18 +49,18 @@ export default function Registration({ contestants, onAdd, onRemove, onStart }) 
                 className={`gender-btn ${gender === 'male' ? 'active' : ''}`}
                 onClick={() => setGender('male')}
               >
-                ♂ Male
+                ♂ Herre
               </button>
               <button
                 type="button"
                 className={`gender-btn ${gender === 'female' ? 'active' : ''}`}
                 onClick={() => setGender('female')}
               >
-                ♀ Female
+                ♀ Dame
               </button>
             </div>
             <button type="submit" className="medieval-btn enlist-btn">
-              + Enlist
+              + Innskriv
             </button>
           </div>
           {error && <p className="form-error">{error}</p>}
@@ -68,7 +68,7 @@ export default function Registration({ contestants, onAdd, onRemove, onStart }) 
 
         {contestants.length > 0 && (
           <div className="contestant-list">
-            <h3 className="list-title">Enlisted Warriors ({contestants.length})</h3>
+            <h3 className="list-title">Innskrevne Krigere ({contestants.length})</h3>
             <ul>
               {contestants.map(c => (
                 <li key={c.id} className="contestant-item">
@@ -79,7 +79,7 @@ export default function Registration({ contestants, onAdd, onRemove, onStart }) 
                   <button
                     className="remove-btn"
                     onClick={() => onRemove(c.id)}
-                    title="Remove warrior"
+                    title="Fjern Kriger"
                   >
                     ✕
                   </button>
@@ -95,10 +95,10 @@ export default function Registration({ contestants, onAdd, onRemove, onStart }) 
             onClick={onStart}
             disabled={contestants.length === 0}
           >
-            ⚔ Begin the Contest ⚔
+            ⚔ Begyn Kampen ⚔
           </button>
           {contestants.length === 0 && (
-            <p className="start-hint">Enlist at least one warrior to begin.</p>
+            <p className="start-hint">Innskriv mindst én Kriger for at begynde.</p>
           )}
         </div>
       </div>

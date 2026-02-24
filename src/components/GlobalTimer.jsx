@@ -17,10 +17,10 @@ export default function GlobalTimer({ elapsedMs, durationMs, contestOver }) {
   return (
     <div className={`global-timer ${contestOver ? 'timer-over' : ''} ${urgent ? 'timer-urgent' : ''}`}>
       <div className="timer-label">
-        {contestOver ? '⚔ Contest Ended ⚔' : 'Time Remaining'}
+        {contestOver ? '⚔ Kampen er Endt ⚔' : 'Tid Tilbage'}
       </div>
       <div className="timer-value">
-        {contestOver ? 'FINISHED' : formatTime(remainingMs)}
+        {contestOver ? 'FULLBRAGT' : formatTime(remainingMs)}
       </div>
       <div className="timer-bar-track">
         <div
@@ -28,7 +28,7 @@ export default function GlobalTimer({ elapsedMs, durationMs, contestOver }) {
           style={{ width: `${progressPct}%` }}
         />
       </div>
-      <div className="timer-elapsed">Elapsed: {formatTime(elapsedMs)}</div>
+      <div className="timer-elapsed">Forløpt: {formatTime(elapsedMs)}</div>
     </div>
   )
 }

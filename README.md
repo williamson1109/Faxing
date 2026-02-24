@@ -1,62 +1,62 @@
-# ⚔ Faxing Championship
+# ⚔ Faxing-Mesterskapet
 
-A medieval-themed web app for running a **Faxing** contest — the noble art of consuming one full litre of Faxe Extra Strong Beer (10% ABV) within the hour.
+Eet Gammelnordisk Webbe-Verktøy for afviklingen af en **Faxing**-Turnering — den ædle Kunst at fortære een hel Litre Faxe Extra Strong (10% Styrke) inden Timens Udløb.
 
 ---
 
-## The Rules
+## Reglerne
 
-| Title | Condition |
+| Titel | Betingelse |
 |---|---|
-| 👑 **Faxekonge** | The first **male** to finish |
-| 👑 **Faxedronning** | The first **female** to finish |
-| ⚔ **Faxeridder** | Any subsequent finisher before the hour is up |
-| 🐴 **Hestemann** | Did not finish within the hour |
+| 👑 **Faxekonge** | Den første **Herre** som fuldbrager det |
+| 👑 **Faxedronning** | Den første **Dame** som fuldbrager det |
+| ⚔ **Faxeridder** | Enhver øvrig Kriger som fuldbrager det inden Timen |
+| 🐴 **Hestemann** | Fuldbragde det Ei inden Timens Udløb |
 
-> *Drink responsibly. Know your limits.*
+> *Drikk med Maadehold. Kjennd Eders Grændser.*
 
 ---
 
-## Getting Started
+## Kom i Gang
 
 ```bash
 npm install
 npm run dev
 ```
 
-Then open [http://localhost:5173](http://localhost:5173) in your browser.
+Aabne saa [http://localhost:5173](http://localhost:5173) i Eders Webbe-Leser.
 
 ---
 
-## How to Run a Contest
+## Hvorledes man afvikler en Turnering
 
-1. **Enlist warriors** — Enter each participant's name and gender, then click **+ Enlist**
-2. **Start** — Click **⚔ Begin the Contest ⚔** to start the 1-hour countdown
-3. **Track** — As participants finish their can, hit **🍺 Finished!** on their card
-4. **DNF** — If someone gives up, hit **✕ DNF** to mark them as Hestemann immediately
-5. **Search** — Use the search bar to quickly find a specific warrior if the field is large
-6. **Reset** — Click **↩ New Contest** to start over
+1. **Innskriv Krigere** — Skriv ind Navn og Kjøn for hver Deltager, og tryk **+ Innskriv**
+2. **Begyn** — Tryk **⚔ Begyn Kampen ⚔** for at starte den ene Times Nedtælling
+3. **Følg med** — Naar en Kriger tømmer sit Bæger, tryk **🍺 Fuldbragt!** paa hans Kort
+4. **Gav Op** — Dersom nogen overgiver sig, tryk **✕ Gav Op** for straks at udnævne dem til Hestemann
+5. **Søk** — Brug Søgefeltet til hurtig at finde en bestemt Kriger naar Flokken er stor
+6. **Ny Turnering** — Tryk **↩ Ny Turnering** for at begynde forfra
 
 ---
 
-## Tech Stack
+## Teknik
 
 - [React 18](https://react.dev/)
 - [Vite 6](https://vitejs.dev/)
-- Vanilla CSS with medieval styling inspired by the Faxe Brewery Denmark aesthetic
+- Simpel CSS med Middelalder-Stil inspireret af Faxe Bryggeri Danmarks Æstetik
 
 ---
 
-## Project Structure
+## Projektstruktur
 
 ```
 src/
-├── App.jsx                  # Root component & contest state
-├── App.css                  # All styles
-├── index.css                # Global / body styles
+├── App.jsx                  # Hoved-Komponent og Turnerings-Tilstand
+├── App.css                  # Al Stilsætning
+├── index.css                # Globale Stile
 └── components/
-    ├── Registration.jsx     # Enlist warriors before the contest
-    ├── Arena.jsx            # Live contest view with leaderboard
-    ├── ContestantCard.jsx   # Individual warrior card
-    └── GlobalTimer.jsx      # Countdown timer with progress bar
+    ├── Registration.jsx     # Innskriv Krigere før Kampen
+    ├── Arena.jsx            # Live Kamp-Visning med Rangliste
+    ├── ContestantCard.jsx   # Den enkelte Krigers Kort
+    └── GlobalTimer.jsx      # Nedtælling med Fremgangsbjælke
 ```

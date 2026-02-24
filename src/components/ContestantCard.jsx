@@ -60,7 +60,7 @@ export default function ContestantCard({
 
       {finishedAt && (
         <div className="card-time">
-          Finished in <strong>{formatElapsed(elapsed)}</strong>
+          Fuldbragt i <strong>{formatElapsed(elapsed)}</strong>
         </div>
       )}
 
@@ -69,7 +69,7 @@ export default function ContestantCard({
       )}
 
       {disqualified && (
-        <div className="card-time shame-text">Did not finish</div>
+        <div className="card-time shame-text">Fuldbragde det Ei</div>
       )}
 
       {/* Actions */}
@@ -79,13 +79,13 @@ export default function ContestantCard({
             className="medieval-btn finish-btn"
             onClick={() => onFinish(id)}
           >
-            🍺 Finished!
+            🍺 Fuldbragt!
           </button>
           <button
             className="medieval-btn dnf-btn"
             onClick={() => onDisqualify(id)}
           >
-            ✕ DNF
+            ✕ Gav Op
           </button>
         </div>
       )}

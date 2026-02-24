@@ -109,8 +109,8 @@ export default function App() {
       <header className="app-header">
         <div className="header-ornament left">⚔</div>
         <div className="header-center">
-          <h1 className="app-title">Faxing Championship</h1>
-          <p className="app-subtitle">Faxe Brewery · Est. 1901 · Denmark</p>
+          <h1 className="app-title">Faxing</h1>
+          <p className="app-subtitle">Faxe Bryggeri · Grundlagt 1901 · Danmark</p>
         </div>
         <div className="header-ornament right">⚔</div>
       </header>
@@ -137,7 +137,7 @@ export default function App() {
       </main>
 
       <footer className="app-footer">
-        <span>⚜ Drink Responsibly ⚜</span>
+        <span>⚜ Drikk med Maadehold ⚜</span>
       </footer>
     </div>
   )
