@@ -2,20 +2,34 @@ import { useState, useEffect, useCallback } from 'react'
 import Registration from './components/Registration'
 import Arena from './components/Arena'
 import type { Contestant, RankedContestant, Screen, Title } from './types'
+import { loadState, saveState, clearState } from './lib/storage'
 import './App.css'
 
 const CONTEST_DURATION_MS = 60 * 60 * 1000 // 1 hour
 
 export default function App() {
-  const [screen, setScreen] = useState<Screen>('home')
-  const [contestants, setContestants] = useState<Contestant[]>([])
-  const [contestStartTime, setContestStartTime] = useState<number | null>(null)
+  // Lazy initialisers restore state from localStorage on first render
+  const [screen, setScreen] = useState<Screen>(
+    () => loadState()?.screen ?? 'home'
+  )
+  const [contestants, setContestants] = useState<Contestant[]>(
+    () => loadState()?.contestants ?? []
+  )
+  const [contestStartTime, setContestStartTime] = useState<number | null>(
+    () => loadState()?.contestStartTime ?? null
+  )
   const [now, setNow] = useState<number>(Date.now())
 
+  // Tick every 500 ms
   useEffect(() => {
     const interval = setInterval(() => setNow(Date.now()), 500)
     return () => clearInterval(interval)
   }, [])
+
+  // Persist whenever relevant state changes
+  useEffect(() => {
+    saveState({ screen, contestants, contestStartTime })
+  }, [screen, contestants, contestStartTime])
 
   const startContest = useCallback(() => {
     if (contestants.length === 0) return
@@ -59,6 +73,7 @@ export default function App() {
   }, [])
 
   const resetContest = useCallback(() => {
+    clearState()
     setContestants([])
     setContestStartTime(null)
     setScreen('home')
