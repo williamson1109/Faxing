@@ -6,7 +6,7 @@ export type Title =
   | 'Faxeridder'
   | 'Hestemann'
 
-export type Screen = 'home' | 'arena' | 'history' | 'event'
+export type Screen = 'home' | 'create' | 'arena' | 'history' | 'event' | 'lore'
 
 export interface Contestant {
   id: string

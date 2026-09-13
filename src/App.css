@@ -73,6 +73,33 @@
   border-top: 1px solid var(--brown-mid);
 }
 
+.brand-button { background: none; border: 0; color: inherit; cursor: pointer; padding: 0; }
+.brand-button:focus-visible, .nav-link:focus-visible { outline: 2px solid var(--gold-bright); outline-offset: 4px; }
+.main-nav { display: flex; justify-content: center; gap: 0.35rem; width: 100%; position: absolute; bottom: -43px; left: 0; z-index: 2; }
+.nav-link { font-family: var(--font-body); text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.72rem; color: var(--parchment); background: var(--brown-dark); border: 1px solid var(--gold-dark); border-top: 0; padding: 0.7rem 1.25rem; cursor: pointer; transition: all 0.2s ease; }
+.nav-link:hover, .nav-link.active { color: var(--gold-bright); background: var(--brown-warm); }
+
+.home-screen, .lore-screen { max-width: 850px; margin: 1.5rem auto 0; text-align: center; }
+.eyebrow { color: var(--gold-mid); font-family: var(--font-body); font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.7rem; }
+.home-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+.home-stats div { display: flex; flex-direction: column; gap: 0.4rem; padding: 1.2rem 0.75rem; border-top: 1px solid var(--gold-dark); border-bottom: 1px solid var(--gold-dark); }
+.home-stats strong { font-family: var(--font-title); color: var(--gold-bright); font-size: 2rem; }
+.home-stats span { color: var(--parchment); font-family: var(--font-body); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.lore-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; text-align: left; margin-top: 2rem; }
+.lore-grid article { border-left: 2px solid var(--gold-mid); padding: 0.4rem 0 0.4rem 1rem; }
+.lore-year { color: var(--gold-bright); font-family: var(--font-body); font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; }
+.lore-grid h3 { color: var(--parchment); font-family: var(--font-title); margin: 0.6rem 0; }
+.lore-grid p { color: var(--brown-warm); font-family: var(--font-text); font-size: 0.9rem; line-height: 1.6; }
+
+@media (max-width: 640px) {
+  .app-header { padding-bottom: 1rem; }
+  .header-ornament { display: none; }
+  .main-nav { position: static; margin-top: 1rem; flex-wrap: wrap; }
+  .nav-link { padding: 0.55rem 0.8rem; font-size: 0.65rem; }
+  .home-stats, .lore-grid { grid-template-columns: 1fr; }
+  .home-stats { gap: 0.5rem; }
+}
+
 /* ── Shared: Scroll Panel ─────────────────────────────── */
 .scroll-panel {
   background:
