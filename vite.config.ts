@@ -24,6 +24,38 @@ function localEventsApi(databaseUrl: string): Plugin {
             return
           }
 
+          if (req.method === 'PUT') {
+            const eventId = new URL(req.url ?? '', 'http://localhost').searchParams.get('id')
+            if (!eventId) {
+              res.statusCode = 400
+              res.end(JSON.stringify({ error: 'Event id is required' }))
+              return
+            }
+            const chunks: Buffer[] = []
+            for await (const chunk of req) chunks.push(Buffer.from(chunk))
+            const body = JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}')
+            const { title, eventDate, official, attendees } = body
+            if (typeof title !== 'string' || !Number.isFinite(Number(eventDate)) || typeof official !== 'boolean' || !Array.isArray(attendees)) {
+              res.statusCode = 400
+              res.end(JSON.stringify({ error: 'Invalid event payload' }))
+              return
+            }
+            const result = await pool.query(
+              `UPDATE faxing_events SET title = $1, event_date = $2, official = $3, attendees = $4::jsonb WHERE id = $5
+               RETURNING id, title, event_date, official, attendees, created_at`,
+              [title.trim().slice(0, 160), new Date(Number(eventDate)), official, JSON.stringify(attendees), eventId],
+            )
+            if (!result.rowCount) {
+              res.statusCode = 404
+              res.end(JSON.stringify({ error: 'Event not found' }))
+              return
+            }
+            res.statusCode = 200
+            res.setHeader('Content-Type', 'application/json')
+            res.end(JSON.stringify(result.rows[0]))
+            return
+          }
+
           if (req.method === 'POST') {
             const chunks: Buffer[] = []
             for await (const chunk of req) chunks.push(Buffer.from(chunk))

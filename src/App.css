@@ -723,3 +723,19 @@
 .results-timeline .result-row::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--gold-mid); border: 2px solid var(--brown-darkest); position: absolute; left: -1.35rem; top: 50%; transform: translateY(-50%); }
 .results-timeline { border-left: 1px solid var(--gold-dark); padding-left: 1.2rem; }
 @media (max-width: 680px) { .history-heading { align-items: stretch; flex-direction: column; } .chronology::before { left: .7rem; } .chronology-year { display: flex; flex-direction: column; gap: .75rem; margin-bottom: 2rem; padding-left: 2rem; } .year-marker { justify-content: flex-start; margin-left: -2rem; } .event-card-official, .event-card-unofficial { margin-top: 0; } .event-card { padding: 1rem; } .result-toolbar { align-items: flex-start; flex-direction: column; } }
+
+/* ── Historical attendee editor ───────────────────────── */
+.admin-add-attendee { margin: 1.25rem 0 1.5rem; padding: 1.1rem 1.2rem 1rem; background: linear-gradient(145deg, rgba(31,18,6,.92), rgba(12,8,3,.8)); border: 1px solid var(--gold-dark); border-left: 3px solid var(--gold-mid); box-shadow: inset 0 0 22px rgba(0,0,0,.24); }
+.admin-section-heading { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: .95rem; }
+.admin-section-heading .eyebrow { margin: 0 0 .2rem; font-size: .62rem; }
+.admin-section-heading h3 { margin: 0; color: var(--gold-bright); font-family: var(--font-title); font-size: 1.1rem; }
+.admin-section-hint, .attendee-help { color: var(--brown-warm); font-family: var(--font-text); font-size: .78rem; font-style: italic; }
+.admin-add-fields { display: grid; grid-template-columns: minmax(180px, 2fr) minmax(120px, 1fr) 90px 90px auto; align-items: end; gap: .65rem; }
+.attendee-field { display: flex; flex-direction: column; gap: .35rem; color: var(--parchment); font-family: var(--font-body); font-size: .65rem; letter-spacing: .1em; text-transform: uppercase; }
+.attendee-field .medieval-input { min-width: 0; width: 100%; box-sizing: border-box; }
+.time-field .medieval-input { text-align: center; }
+.attendee-add-btn { min-height: 42px; white-space: nowrap; }
+.attendee-help { margin: .7rem 0 0; }
+.save-message { align-self: center; color: #a0e8a0; font-family: var(--font-text); font-size: .82rem; }
+@media (max-width: 760px) { .admin-add-fields { grid-template-columns: 1fr 1fr; } .attendee-name-field, .attendee-add-btn { grid-column: 1 / -1; } .attendee-add-btn { justify-self: start; } }
+@media (max-width: 480px) { .admin-section-heading { align-items: flex-start; flex-direction: column; gap: .3rem; } .admin-add-fields { grid-template-columns: 1fr; } .attendee-name-field, .attendee-add-btn { grid-column: auto; } .attendee-add-btn { width: 100%; } }
