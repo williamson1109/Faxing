@@ -70,8 +70,7 @@ function localEventsApi(): Plugin {
 export default defineConfig({
   plugins: [react(), localEventsApi()],
   server: {
+    host: '0.0.0.0',
     port: 5173,
-    strictPort: true,
-    hmr: { port: 5173 },
   },
 })
