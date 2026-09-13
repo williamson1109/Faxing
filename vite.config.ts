@@ -1,10 +1,10 @@
-import { defineConfig, type Plugin } from 'vite'
+import { defineConfig, loadEnv, type Plugin, type ConfigEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import { Pool } from 'pg'
 
-function localEventsApi(): Plugin {
+function localEventsApi(databaseUrl: string): Plugin {
   const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
+    connectionString: databaseUrl,
     max: 5,
     ssl: { rejectUnauthorized: false },
   })
@@ -67,10 +67,15 @@ function localEventsApi(): Plugin {
   }
 }
 
-export default defineConfig({
-  plugins: [react(), localEventsApi()],
-  server: {
-    host: '0.0.0.0',
-    port: 5173,
-  },
+export default defineConfig(({ mode }: ConfigEnv) => {
+  const env = loadEnv(mode, process.cwd(), '')
+  const databaseUrl = env.DATABASE_URL || process.env.DATABASE_URL
+
+  return {
+    plugins: [react(), localEventsApi(databaseUrl)],
+    server: {
+      host: '0.0.0.0',
+      port: 5173,
+    },
+  }
 })
