@@ -677,3 +677,16 @@
   .gender-btn { flex: 1; }
   .header-ornament { display: none; }
 }
+
+.admin-login-button { position: absolute; top: 0.8rem; right: 1rem; z-index: 3; background: transparent; border: 1px solid var(--gold-dark); color: var(--parchment); padding: 0.35rem 0.65rem; font-family: var(--font-body); font-size: 0.65rem; letter-spacing: 0.08em; cursor: pointer; }
+.admin-login-button:hover { color: var(--gold-bright); border-color: var(--gold-bright); }
+.admin-login-popover { position: absolute; top: 2.8rem; right: 1rem; z-index: 4; display: flex; flex-direction: column; gap: 0.5rem; width: 220px; padding: 0.8rem; background: var(--brown-dark); border: 1px solid var(--gold-mid); box-shadow: 0 8px 25px rgba(0,0,0,0.65); }
+.admin-login-popover label, .admin-edit-form label { color: var(--parchment); font-family: var(--font-body); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.admin-edit-form { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: end; margin: 1rem 0; }
+.admin-edit-form label { display: flex; flex-direction: column; gap: 0.35rem; flex: 1; min-width: 170px; }
+.check-label { flex-direction: row !important; align-items: center; min-width: auto !important; }
+.admin-actions { display: flex; justify-content: center; gap: 0.75rem; margin-top: 1.5rem; }
+.admin-name-input, .admin-status, .admin-card-name { min-width: 0; padding: 0.35rem 0.5rem; font-size: 0.85rem; }
+.admin-name-input { flex: 1; }
+.admin-status { width: 130px; flex: 0 0 130px; }
+.admin-card-name { flex: 1; }
