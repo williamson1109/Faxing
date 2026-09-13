@@ -6,9 +6,8 @@ export type Title =
   | 'Faxeridder'
   | 'Hestemann'
 
-export type Screen = 'home' | 'arena'
+export type Screen = 'home' | 'arena' | 'history' | 'event'
 
-/** A contestant as stored in state (no title yet) */
 export interface Contestant {
   id: string
   name: string
@@ -17,8 +16,24 @@ export interface Contestant {
   disqualified: boolean
 }
 
-/** A contestant after ranking has been computed */
 export interface RankedContestant extends Contestant {
   title: Title | null
   elapsed: number
+}
+
+export interface FaxingEvent {
+  id: string
+  name: string
+  date: number
+  official: boolean
+  contestants: RankedContestant[]
+  password?: string
+}
+
+export interface PersistedState {
+  screen: Screen
+  contestants: Contestant[]
+  contestStartTime: number | null
+  events: FaxingEvent[]
+  activeEventId: string | null
 }

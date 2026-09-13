@@ -1,164 +1,33 @@
 import { useState, useEffect, useCallback } from 'react'
 import Registration from './components/Registration'
 import Arena from './components/Arena'
-import type { Contestant, RankedContestant, Screen, Title } from './types'
-import { loadState, saveState, clearState } from './lib/storage'
+import History from './components/History'
+import EventView from './components/EventView'
+import type { Contestant, RankedContestant, Screen, Title, FaxingEvent } from './types'
+import { loadState, saveState } from './lib/storage'
 import './App.css'
 
-const CONTEST_DURATION_MS = 60 * 60 * 1000 // 1 hour
+const CONTEST_DURATION_MS = 60 * 60 * 1000
 
 export default function App() {
-  // Lazy initialisers restore state from localStorage on first render
-  const [screen, setScreen] = useState<Screen>(
-    () => loadState()?.screen ?? 'home'
-  )
-  const [contestants, setContestants] = useState<Contestant[]>(
-    () => loadState()?.contestants ?? []
-  )
-  const [contestStartTime, setContestStartTime] = useState<number | null>(
-    () => loadState()?.contestStartTime ?? null
-  )
-  const [now, setNow] = useState<number>(Date.now())
+  const restored = loadState()
+  const [screen, setScreen] = useState<Screen>(restored?.screen ?? 'home')
+  const [contestants, setContestants] = useState<Contestant[]>(restored?.contestants ?? [])
+  const [contestStartTime, setContestStartTime] = useState<number | null>(restored?.contestStartTime ?? null)
+  const [events, setEvents] = useState<FaxingEvent[]>(restored?.events ?? [])
+  const [activeEventId, setActiveEventId] = useState<string | null>(restored?.activeEventId ?? null)
+  const [now, setNow] = useState(Date.now())
+  useEffect(() => { const interval = setInterval(() => setNow(Date.now()), 500); return () => clearInterval(interval) }, [])
+  useEffect(() => { saveState({ screen, contestants, contestStartTime, events, activeEventId }) }, [screen, contestants, contestStartTime, events, activeEventId])
 
-  // Tick every 500 ms
-  useEffect(() => {
-    const interval = setInterval(() => setNow(Date.now()), 500)
-    return () => clearInterval(interval)
-  }, [])
+  const startContest = useCallback((name: string, official: boolean, password?: string) => { if (!contestants.length) return; setEvents(prev => prev); setContestStartTime(Date.now()); setScreen('arena'); setActiveEventId(`${name}|${official}|${password ?? ''}`) }, [contestants])
+  const addContestant = useCallback((name: string, gender: Contestant['gender']) => setContestants(prev => [...prev, { id: crypto.randomUUID(), name, gender, finishedAt: null, disqualified: false }]), [])
+  const removeContestant = useCallback((id: string) => setContestants(prev => prev.filter(c => c.id !== id)), [])
+  const markFinished = useCallback((id: string) => setContestants(prev => prev.map(c => c.id === id && !c.finishedAt && !c.disqualified ? { ...c, finishedAt: Date.now() } : c)), [])
+  const markDisqualified = useCallback((id: string) => setContestants(prev => prev.map(c => c.id === id ? { ...c, disqualified: true, finishedAt: null } : c)), [])
+  const getRankedContestants = useCallback((): RankedContestant[] => { if (!contestStartTime) return contestants.map(c => ({ ...c, title: null, elapsed: 0 })); let king = false, queen = false; return [...contestants].sort((a, b) => (a.finishedAt && b.finishedAt ? a.finishedAt - b.finishedAt : a.finishedAt ? -1 : b.finishedAt ? 1 : 0)).map(c => { const elapsed = (c.finishedAt ?? now) - contestStartTime; let title: Title | null = null; if (c.disqualified || (!c.finishedAt && elapsed >= CONTEST_DURATION_MS)) title = 'Hestemann'; else if (c.finishedAt && c.gender === 'male' && !king) { title = 'Faxekonge'; king = true } else if (c.finishedAt && c.gender === 'female' && !queen) { title = 'Faxedronning'; queen = true } else if (c.finishedAt) title = 'Faxeridder'; return { ...c, title, elapsed: c.finishedAt ? c.finishedAt - contestStartTime : elapsed } }) }, [contestants, contestStartTime, now])
+  const finishEvent = useCallback(() => { if (!activeEventId || !contestStartTime) return; const [name, official, password] = activeEventId.split('|'); setEvents(prev => [...prev, { id: crypto.randomUUID(), name, official: official === 'true', password: password || undefined, date: contestStartTime, contestants: getRankedContestants() }]); setContestants([]); setContestStartTime(null); setActiveEventId(null); setScreen('history') }, [activeEventId, contestStartTime, getRankedContestants])
+  const activeEvent = events.find(event => event.id === activeEventId)
 
-  // Persist whenever relevant state changes
-  useEffect(() => {
-    saveState({ screen, contestants, contestStartTime })
-  }, [screen, contestants, contestStartTime])
-
-  const startContest = useCallback(() => {
-    if (contestants.length === 0) return
-    setContestStartTime(Date.now())
-    setScreen('arena')
-  }, [contestants])
-
-  const addContestant = useCallback((name: string, gender: Contestant['gender']) => {
-    setContestants(prev => [
-      ...prev,
-      {
-        id: crypto.randomUUID(),
-        name,
-        gender,
-        finishedAt: null,
-        disqualified: false,
-      },
-    ])
-  }, [])
-
-  const removeContestant = useCallback((id: string) => {
-    setContestants(prev => prev.filter(c => c.id !== id))
-  }, [])
-
-  const markFinished = useCallback((id: string) => {
-    setContestants(prev =>
-      prev.map(c =>
-        c.id === id && !c.finishedAt && !c.disqualified
-          ? { ...c, finishedAt: Date.now() }
-          : c
-      )
-    )
-  }, [])
-
-  const markDisqualified = useCallback((id: string) => {
-    setContestants(prev =>
-      prev.map(c =>
-        c.id === id ? { ...c, disqualified: true, finishedAt: null } : c
-      )
-    )
-  }, [])
-
-  const resetContest = useCallback(() => {
-    clearState()
-    setContestants([])
-    setContestStartTime(null)
-    setScreen('home')
-  }, [])
-
-  const getRankedContestants = useCallback((): RankedContestant[] => {
-    if (!contestStartTime) {
-      return contestants.map(c => ({ ...c, title: null, elapsed: 0 }))
-    }
-
-    let faxekongeAwarded = false
-    let faxedronningAwarded = false
-
-    const sorted = [...contestants].sort((a, b) => {
-      if (a.finishedAt && b.finishedAt) return a.finishedAt - b.finishedAt
-      if (a.finishedAt) return -1
-      if (b.finishedAt) return 1
-      return 0
-    })
-
-    return sorted.map(c => {
-      let title: Title | null = null
-      const elapsed = (c.finishedAt ?? now) - contestStartTime
-      const finished = c.finishedAt !== null
-      const outOfTime = !finished && elapsed >= CONTEST_DURATION_MS
-
-      if (c.disqualified) {
-        title = 'Hestemann'
-      } else if (finished) {
-        if (c.gender === 'male' && !faxekongeAwarded) {
-          title = 'Faxekonge'
-          faxekongeAwarded = true
-        } else if (c.gender === 'female' && !faxedronningAwarded) {
-          title = 'Faxedronning'
-          faxedronningAwarded = true
-        } else {
-          title = 'Faxeridder'
-        }
-      } else if (outOfTime) {
-        title = 'Hestemann'
-      }
-
-      return {
-        ...c,
-        title,
-        elapsed: finished ? (c.finishedAt as number) - contestStartTime : elapsed,
-      }
-    })
-  }, [contestants, contestStartTime, now])
-
-  return (
-    <div className="app-root">
-      <header className="app-header">
-        <div className="header-ornament left">⚔</div>
-        <div className="header-center">
-          <h1 className="app-title">Faxing</h1>
-          <p className="app-subtitle">Faxe Bryggeri · Grundlagt 1901 · Danmark</p>
-        </div>
-        <div className="header-ornament right">⚔</div>
-      </header>
-
-      <main className="app-main">
-        {screen === 'home' ? (
-          <Registration
-            contestants={contestants}
-            onAdd={addContestant}
-            onRemove={removeContestant}
-            onStart={startContest}
-          />
-        ) : (
-          <Arena
-            rankedContestants={getRankedContestants()}
-            contestStartTime={contestStartTime as number}
-            now={now}
-            durationMs={CONTEST_DURATION_MS}
-            onFinish={markFinished}
-            onDisqualify={markDisqualified}
-            onReset={resetContest}
-          />
-        )}
-      </main>
-
-      <footer className="app-footer">
-        <span>⚜ Drikk med Maadehold ⚜</span>
-      </footer>
-    </div>
-  )
+  return <div className="app-root"><header className="app-header"><div className="header-ornament left">⚔</div><div className="header-center"><h1 className="app-title">Faxing</h1><p className="app-subtitle">Faxe Bryggeri · Grundlagt 1901 · Danmark</p></div><div className="header-ornament right">⚔</div></header><main className="app-main">{screen === 'home' && <Registration contestants={contestants} onAdd={addContestant} onRemove={removeContestant} onStart={startContest} onHistory={() => setScreen('history')} />}{screen === 'history' && <History events={events} onOpen={event => { setActiveEventId(event.id); setScreen('event') }} onCreate={() => setScreen('home')} />}{screen === 'event' && activeEvent && <EventView event={activeEvent} onBack={() => setScreen('history')} />}{screen === 'arena' && <Arena rankedContestants={getRankedContestants()} contestStartTime={contestStartTime as number} now={now} durationMs={CONTEST_DURATION_MS} onFinish={markFinished} onDisqualify={markDisqualified} onReset={finishEvent} />}</main><footer className="app-footer"><span>⚜ Drikk med Maadehold ⚜</span></footer></div>
 }
