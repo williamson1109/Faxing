@@ -23,6 +23,8 @@ export default function EventView({ event, isAdmin, onSave, onDelete }: Props) {
   const [newSeconds, setNewSeconds] = useState('')
   const [addError, setAddError] = useState('')
   const [savedMessage, setSavedMessage] = useState('')
+  const [isEditing, setIsEditing] = useState(false)
+  const canEdit = isAdmin && isEditing
 
   const update = (id: string, patch: Partial<RankedContestant>) => {
     setDraft(value => ({ ...value, contestants: value.contestants.map(contestant => contestant.id === id ? { ...contestant, ...patch } : contestant) }))
@@ -82,8 +84,9 @@ export default function EventView({ event, isAdmin, onSave, onDelete }: Props) {
   return (
     <div className="event-view scroll-panel">
       <div className="event-view-heading">
-        {isAdmin && <div className="admin-edit-notice"><span className="eyebrow">Faxepave-værktøj</span><strong>Redigering er aktiv</strong><span>Ændr eventet og tryk “Gem alle ændringer”.</span></div>}
-        {isAdmin ? (
+        {isAdmin && !isEditing && <button className="medieval-btn edit-event-btn" onClick={() => setIsEditing(true)}>Rediger Faxing</button>}
+        {canEdit && <div className="admin-edit-notice"><span className="eyebrow">Faxepave-værktøj</span><strong>Redigering er aktiv</strong><span>Ændr eventet og tryk “Gem alle ændringer”.</span></div>}
+        {canEdit ? (
           <div className="admin-edit-form">
             <label>Eventnavn<input className="medieval-input" value={draft.name} onChange={eventInput => setDraft({ ...draft, name: eventInput.target.value })} /></label>
             <label>Dato<input className="medieval-input" type="date" value={formatInputDate(draft.date)} onChange={eventInput => setDraft({ ...draft, date: new Date(`${eventInput.target.value}T12:00:00`).getTime() })} /></label>
@@ -98,7 +101,7 @@ export default function EventView({ event, isAdmin, onSave, onDelete }: Props) {
       </div>
       <p className="panel-desc">{draft.contestants.length} deltagere i denne dyst.</p>
 
-      {isAdmin && (
+      {canEdit && (
         <form className="admin-add-attendee" onSubmit={addAttendee}>
           <div className="admin-section-heading"><div><span className="eyebrow">Faxepave-værktøj</span><h3>Tilføj deltager</h3></div><span className="admin-section-hint">Gemmes direkte i krøniken</span></div>
           <div className="admin-add-fields">
@@ -114,8 +117,8 @@ export default function EventView({ event, isAdmin, onSave, onDelete }: Props) {
       )}
 
       <div className="result-toolbar"><span>Resultater</span><span className="result-count">{sorted.length} deltagere</span></div>
-      <div className="results-table" role="table" aria-label={`Resultater for ${draft.name}`}><div className="results-table-head" role="row"><span>Plads</span><span>Deltager</span><span>Drikketid</span><span aria-label="Hæder" /></div>{sorted.map((contestant, index) => <ResultRow key={contestant.id} contestant={contestant} index={index} isAdmin={isAdmin} onUpdate={update} />)}</div>
-      {isAdmin && <div className="admin-actions"><button className="medieval-btn" onClick={save} disabled={saving}>{saving ? 'Gemmer…' : 'Gem alle ændringer'}</button>{savedMessage && <span className="save-message" role="status">{savedMessage}</span>}<button className="medieval-btn danger-btn" onClick={() => onDelete(draft.id)}>Slet Faxing</button></div>}
+      <div className="results-table" role="table" aria-label={`Resultater for ${draft.name}`}><div className="results-table-head" role="row"><span>Plads</span><span>Deltager</span><span>Drikketid</span><span aria-label="Hæder" /></div>{sorted.map((contestant, index) => <ResultRow key={contestant.id} contestant={contestant} index={index} isAdmin={canEdit} onUpdate={update} />)}</div>
+      {canEdit && <div className="admin-actions"><button className="medieval-btn" onClick={save} disabled={saving}>{saving ? 'Gemmer…' : 'Gem alle ændringer'}</button><button className="medieval-btn" type="button" onClick={() => { setIsEditing(false); setDraft({ ...event, contestants: Array.isArray(event.contestants) ? event.contestants : [] }) }}>Annuller</button>{savedMessage && <span className="save-message" role="status">{savedMessage}</span>}<button className="medieval-btn danger-btn" onClick={() => onDelete(draft.id)}>Slet Faxing</button></div>}
     </div>
   )
 }
