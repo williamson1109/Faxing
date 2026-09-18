@@ -82,6 +82,7 @@ export default function EventView({ event, isAdmin, onSave, onDelete }: Props) {
   return (
     <div className="event-view scroll-panel">
       <div className="event-view-heading">
+        {isAdmin && <div className="admin-edit-notice"><span className="eyebrow">Faxepave-værktøj</span><strong>Redigering er aktiv</strong><span>Ændr eventet og tryk “Gem alle ændringer”.</span></div>}
         {isAdmin ? (
           <div className="admin-edit-form">
             <label>Eventnavn<input className="medieval-input" value={draft.name} onChange={eventInput => setDraft({ ...draft, name: eventInput.target.value })} /></label>

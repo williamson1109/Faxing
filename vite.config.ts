@@ -24,8 +24,15 @@ function localEventsApi(databaseUrl: string, adminPassword: string): Plugin {
           res.setHeader('Set-Cookie', `faxepave_session=${token}; HttpOnly; SameSite=Lax; Path=/; Max-Age=86400`)
           res.statusCode = 200; res.end(JSON.stringify({ authenticated: true })); return
         }
-        if (req.method === 'DELETE') { res.setHeader('Set-Cookie', 'faxepave_session=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0'); res.statusCode = 204; res.end(); return }
-        res.statusCode = 405; res.end(JSON.stringify({ error: 'Method not allowed' }))
+  if (req.method === 'DELETE') { res.setHeader('Set-Cookie', 'faxepave_session=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0'); res.statusCode = 204; res.end(); return }
+  if (req.method === 'GET') {
+    const cookie = req.headers.cookie?.split(';').map(value => value.trim()).find(value => value.startsWith('faxepave_session='))?.split('=')[1]
+    const { createHmac, timingSafeEqual } = await import('node:crypto')
+    const expected = secret ? createHmac('sha256', secret).update('faxepave-session').digest('hex') : ''
+    const authenticated = Boolean(cookie && expected && cookie.length === expected.length && timingSafeEqual(Buffer.from(cookie), Buffer.from(expected)))
+    res.statusCode = 200; res.setHeader('Content-Type', 'application/json'); res.end(JSON.stringify({ authenticated })); return
+  }
+  res.statusCode = 405; res.end(JSON.stringify({ error: 'Method not allowed' }))
       })
       server.middlewares.use('/api/events', async (req, res) => {
         try {
