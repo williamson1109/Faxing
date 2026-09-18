@@ -1,13 +1,28 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { Pool } from 'pg'
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 5, ssl: { rejectUnauthorized: false } })
-const FAXEPAVE_PASSWORD = 'jegElskerFaxe!jAA'
-const isAdmin = (req: VercelRequest) => req.headers['x-faxepave-password'] === FAXEPAVE_PASSWORD
+const databaseUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL
+const pool = databaseUrl
+  ? new Pool({ connectionString: databaseUrl, max: 5, ssl: { rejectUnauthorized: false } })
+  : null
+
+function isValidEventDate(value: unknown): value is number {
+  return typeof value === 'number' && Number.isFinite(value) && Number.isFinite(new Date(value).getTime())
+}
+const sessionToken = (req: VercelRequest) => req.headers.cookie?.split(';').map(value => value.trim()).find(value => value.startsWith('faxepave_session='))?.split('=')[1]
+const isAdmin = (req: VercelRequest) => {
+  const value = sessionToken(req)
+  const expected = process.env.FAXEPAVE_PASSWORD
+  if (!value || !expected) return false
+  const crypto = require('node:crypto') as typeof import('node:crypto')
+  const token = crypto.createHmac('sha256', expected).update('faxepave-session').digest('hex')
+  return value === token
+}
 const columns = 'id, title, event_date, official, attendees, created_at'
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
+    if (!pool) return res.status(503).json({ error: 'Database connection is not configured' })
     const id = typeof req.query.id === 'string' ? req.query.id : undefined
     if (req.method === 'GET' && !id) {
       const result = await pool.query(`SELECT ${columns} FROM faxing_events ORDER BY event_date DESC`)
@@ -17,7 +32,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (!id) return res.status(400).json({ error: 'Event id is required' })
     if (req.method === 'PUT') {
       const { title, eventDate, official, attendees } = req.body ?? {}
-      if (typeof title !== 'string' || !Number.isFinite(Number(eventDate)) || typeof official !== 'boolean' || !Array.isArray(attendees)) return res.status(400).json({ error: 'Invalid event payload' })
+      if (typeof title !== 'string' || !isValidEventDate(Number(eventDate)) || typeof official !== 'boolean' || !Array.isArray(attendees)) return res.status(400).json({ error: 'Invalid event payload' })
       const result = await pool.query(`UPDATE faxing_events SET title = $1, event_date = $2, official = $3, attendees = $4::jsonb WHERE id = $5 RETURNING ${columns}`, [title.trim().slice(0, 160), new Date(Number(eventDate)), official, JSON.stringify(attendees), id])
       if (!result.rowCount) return res.status(404).json({ error: 'Event not found' })
       return res.status(200).json(result.rows[0])
