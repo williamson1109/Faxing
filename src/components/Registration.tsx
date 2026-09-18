@@ -49,12 +49,13 @@ export default function Registration({ contestants, onAdd, onRemove, onStart, is
             <div className="gender-toggle">
               <button type="button" className={`gender-btn ${gender === 'male' ? 'active' : ''}`} onClick={() => setGender('male')}>♂ Herre</button>
               <button type="button" className={`gender-btn ${gender === 'female' ? 'active' : ''}`} onClick={() => setGender('female')}>♀ Dame</button>
+              <button type="button" className={`gender-btn ${gender === 'other' ? 'active' : ''}`} onClick={() => setGender('other')}>⚥ Annet</button>
             </div>
             <button type="submit" className="medieval-btn enlist-btn">+ Innskriv</button>
           </div>
           {error && <p className="form-error">{error}</p>}
         </form>
-        {contestants.length > 0 && <div className="contestant-list"><h3 className="list-title">Innskrevne Krigere ({contestants.length})</h3><ul>{contestants.map((contestant) => <li key={contestant.id} className="contestant-item"><span className="contestant-gender-icon">{contestant.gender === 'male' ? '♂' : '♀'}</span><span className="contestant-name">{contestant.name}</span><button className="remove-btn" onClick={() => onRemove(contestant.id)}>✕</button></li>)}</ul></div>}
+        {contestants.length > 0 && <div className="contestant-list"><h3 className="list-title">Innskrevne Krigere ({contestants.length})</h3><ul>{contestants.map((contestant) => <li key={contestant.id} className="contestant-item"><span className="contestant-gender-icon">{contestant.gender === 'male' ? '♂' : contestant.gender === 'female' ? '♀' : '⚥'}</span><span className="contestant-name">{contestant.name}</span><button className="remove-btn" onClick={() => onRemove(contestant.id)}>✕</button></li>)}</ul></div>}
         <div className="event-setup">
           <input className="medieval-input" placeholder="Begivenhedens navn..." value={eventName} onChange={(event) => setEventName(event.target.value)} />
           {isAdmin ? <label className="official-toggle"><input type="checkbox" checked={official} onChange={(event) => setOfficial(event.target.checked)} /> Officiel Faxing</label> : <p className="admin-only-note">Kun Faxepaven kan oprette en officiel Faxing.</p>}

@@ -18,7 +18,7 @@ export default function EventView({ event, isAdmin, onSave, onDelete }: Props) {
   const [saving, setSaving] = useState(false)
   useEffect(() => { setDraft({ ...event, contestants: Array.isArray(event.contestants) ? event.contestants : [] }) }, [event])
   const [newName, setNewName] = useState('')
-  const [newGender, setNewGender] = useState<'male' | 'female'>('male')
+  const [newGender, setNewGender] = useState<'male' | 'female' | 'other'>('male')
   const [newMinutes, setNewMinutes] = useState('')
   const [newSeconds, setNewSeconds] = useState('')
   const [addError, setAddError] = useState('')
@@ -119,7 +119,7 @@ export default function EventView({ event, isAdmin, onSave, onDelete }: Props) {
           <div className="admin-section-heading"><div><span className="eyebrow">Faxepave-værktøj</span><h3>Tilføj deltager</h3></div><span className="admin-section-hint">Gemmes direkte i krøniken</span></div>
           <div className="admin-add-fields">
             <label className="attendee-field attendee-name-field">Navn<input className="medieval-input" placeholder="Fx Anders Jensen" aria-label="Navn på ny deltager" value={newName} onChange={eventInput => setNewName(eventInput.target.value)} /></label>
-            <label className="attendee-field">Køn<select className="medieval-input" aria-label="Køn på ny deltager" value={newGender} onChange={eventInput => setNewGender(eventInput.target.value as 'male' | 'female')}><option value="male">Mand</option><option value="female">Kvinde</option></select></label>
+            <label className="attendee-field">Køn<select className="medieval-input" aria-label="Køn på ny deltager" value={newGender} onChange={eventInput => setNewGender(eventInput.target.value as 'male' | 'female' | 'other')}><option value="male">Mand</option><option value="female">Kvinde</option><option value="other">⚥ Annet</option></select></label>
             <label className="attendee-field time-field">Minutter<input className="medieval-input" inputMode="numeric" placeholder="0" aria-label="Drikketid minutter" value={newMinutes} onChange={eventInput => setNewMinutes(eventInput.target.value)} /></label>
             <label className="attendee-field time-field">Sekunder<input className="medieval-input" inputMode="numeric" placeholder="00" aria-label="Drikketid sekunder" value={newSeconds} onChange={eventInput => setNewSeconds(eventInput.target.value)} /></label>
             <button className="medieval-btn attendee-add-btn" type="submit" disabled={saving}>Tilføj og gem</button>
