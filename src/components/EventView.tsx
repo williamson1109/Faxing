@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { FaxingEvent, RankedContestant } from '../types'
 
 interface Props {
@@ -10,11 +10,12 @@ interface Props {
 }
 
 const formatTime = (ms: number) => `${Math.floor(ms / 60000)}:${String(Math.floor((ms % 60000) / 1000)).padStart(2, '0')}`
-const formatDate = (date: number) => new Intl.DateTimeFormat('da-DK', { day: 'numeric', month: 'long', year: 'numeric' }).format(date)
+const formatDate = (date: number) => { const timestamp = Number(date); return Number.isFinite(timestamp) && Number.isFinite(new Date(timestamp).getTime()) ? new Intl.DateTimeFormat('da-DK', { day: 'numeric', month: 'long', year: 'numeric' }).format(timestamp) : 'Ukendt dato' }
 
 export default function EventView({ event, isAdmin, onSave, onDelete }: Props) {
-  const [draft, setDraft] = useState(event)
+  const [draft, setDraft] = useState(() => ({ ...event, contestants: Array.isArray(event.contestants) ? event.contestants : [] }))
   const [saving, setSaving] = useState(false)
+  useEffect(() => { setDraft({ ...event, contestants: Array.isArray(event.contestants) ? event.contestants : [] }) }, [event])
   const [newName, setNewName] = useState('')
   const [newGender, setNewGender] = useState<'male' | 'female'>('male')
   const [newMinutes, setNewMinutes] = useState('')
