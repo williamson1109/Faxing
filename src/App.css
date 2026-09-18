@@ -694,6 +694,10 @@
   .header-ornament { display: none; }
 }
 
+.ongoing-event-banner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin: 1.5rem auto; padding: 1rem 1.2rem; max-width: 650px; background: linear-gradient(135deg, rgba(71,45,15,.95), rgba(25,15,5,.95)); border: 1px solid var(--gold-mid); box-shadow: 0 0 22px rgba(200,148,58,.14); }
+.ongoing-event-banner div { display: flex; flex-direction: column; gap: .25rem; text-align: left; }
+.ongoing-event-banner strong { color: var(--gold-bright); font-family: var(--font-title); font-size: 1.15rem; }
+.ongoing-event-banner span:last-child { color: var(--parchment); font-family: var(--font-text); font-size: .8rem; }
 .admin-login-button { position: absolute; top: 0.8rem; right: 1rem; z-index: 3; background: transparent; border: 1px solid var(--gold-dark); color: var(--parchment); padding: 0.35rem 0.65rem; font-family: var(--font-body); font-size: 0.65rem; letter-spacing: 0.08em; cursor: pointer; }
 .admin-login-button:hover { color: var(--gold-bright); border-color: var(--gold-bright); }
 .admin-login-popover { position: absolute; top: 2.8rem; right: 1rem; z-index: 4; display: flex; flex-direction: column; gap: 0.5rem; width: 220px; padding: 0.8rem; background: var(--brown-dark); border: 1px solid var(--gold-mid); box-shadow: 0 8px 25px rgba(0,0,0,0.65); }
