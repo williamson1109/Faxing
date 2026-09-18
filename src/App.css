@@ -325,6 +325,7 @@
 .start-section .start-btn {
   margin-top: .25rem;
 }
+.admin-only-note { margin: .65rem 0 0; color: var(--brown-warm); font-family: var(--font-text); font-size: .8rem; font-style: italic; }
 .start-btn {
   font-size: 1.1rem;
   padding: 0.9rem 3rem;
