@@ -9,8 +9,15 @@ const pool = databaseUrl
 function isValidEventDate(value: unknown): value is number {
   return typeof value === 'number' && Number.isFinite(value) && Number.isFinite(new Date(value).getTime())
 }
-const FAXEPAVE_PASSWORD = 'jegElskerFaxe!jAA'
-const isAdmin = (req: VercelRequest) => req.headers['x-faxepave-password'] === FAXEPAVE_PASSWORD
+const sessionToken = (req: VercelRequest) => req.headers.cookie?.split(';').map(value => value.trim()).find(value => value.startsWith('faxepave_session='))?.split('=')[1]
+const isAdmin = (req: VercelRequest) => {
+  const value = sessionToken(req)
+  const expected = process.env.FAXEPAVE_PASSWORD
+  if (!value || !expected) return false
+  const crypto = require('node:crypto') as typeof import('node:crypto')
+  const token = crypto.createHmac('sha256', expected).update('faxepave-session').digest('hex')
+  return value === token
+}
 const columns = 'id, title, event_date, official, attendees, created_at'
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
