@@ -1,9 +1,9 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { Pool } from 'pg'
 
-const databaseUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL
+const databaseUrl = process.env.POSTGRES_URL || process.env.DATABASE_URL || process.env.POSTGRES_PRISMA_URL
 const pool = databaseUrl
-  ? new Pool({ connectionString: databaseUrl, max: 5, ssl: { rejectUnauthorized: false } })
+  ? new Pool({ connectionString: databaseUrl, max: 2, connectionTimeoutMillis: 10000, idleTimeoutMillis: 10000, ssl: { rejectUnauthorized: false } })
   : null
 
 function isValidEventDate(value: unknown): value is number {
@@ -50,5 +50,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
     res.setHeader('Allow', 'GET, POST, PUT, DELETE')
     return res.status(405).json({ error: 'Method not allowed' })
-  } catch (error) { console.error('[v0] Events API error:', error); return res.status(500).json({ error: 'Unable to access events' }) }
+  } catch (error) {
+    console.error('[v0] Events API error:', error)
+    const message = error instanceof Error ? error.message : 'Unable to access events'
+    return res.status(500).json({ error: process.env.NODE_ENV === 'production' ? 'Unable to access events' : message })
+  }
 }

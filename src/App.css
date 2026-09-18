@@ -562,6 +562,17 @@
   }
 .contestant-card .card-actions .finish-btn { flex: 1; }
 .contestant-card .card-actions .dnf-btn { flex: 1; }
+/* Keep progress actions compact in every arena, including official Faxinger. */
+.contestant-card .card-actions button.finish-btn,
+.contestant-card .card-actions button.dnf-btn {
+  flex: 1 1 0;
+  min-height: 0;
+  height: auto;
+  padding: .28rem .25rem;
+  font-size: .58rem;
+  line-height: 1.15;
+  white-space: normal;
+}
 .finish-btn {
   flex: 2;
   background: linear-gradient(180deg, #2a6030 0%, #1a3d1e 100%);
@@ -757,10 +768,10 @@
 .chronology-events { display: contents; }
 .event-card { appearance: none; width: 100%; text-align: left; display: flex; flex-direction: column; gap: .42rem; padding: 1.25rem 1.35rem; color: var(--cream); background: linear-gradient(145deg, rgba(74,46,16,.98), rgba(27,16,5,.98)); border: 1px solid var(--brown-light); border-radius: 3px; cursor: pointer; box-shadow: 0 5px 18px rgba(0,0,0,.45); transition: transform .2s, border-color .2s, box-shadow .2s; }
 .event-card:hover { transform: translateY(-3px); border-color: var(--gold-bright); box-shadow: 0 8px 24px rgba(0,0,0,.65), 0 0 14px rgba(200,148,58,.2); }
-.event-card-official { grid-column: 1; border-width: 2px; padding: 1.6rem 1.5rem; border-color: var(--gold-mid); }
-  .event-card-unofficial { grid-column: 2; justify-self: start; width: min(100%, 270px); margin-top: 1.75rem; padding: .85rem 1rem; gap: .28rem; }
-  .event-card-unofficial strong { font-size: 1rem; }
-  .event-card-unofficial .event-card-meta { font-size: .74rem; }
+.event-card-official { grid-column: 1; border-width: 2px; padding: .85rem 1rem; gap: .28rem; border-color: var(--gold-mid); }
+ .event-card-unofficial { grid-column: 2; justify-self: start; width: min(100%, 270px); margin-top: 1.75rem; padding: .85rem 1rem; gap: .28rem; }
+ .event-card-official strong, .event-card-unofficial strong { font-size: 1rem; }
+ .event-card-official .event-card-meta, .event-card-unofficial .event-card-meta { font-size: .74rem; }
 
 .event-card-date, .event-card-type { font-family: var(--font-body); font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; color: var(--gold-mid); }
 .event-card-type { color: var(--parchment); opacity: .75; }
@@ -798,7 +809,7 @@
 @media (max-width: 680px) { .results-table-head, .results-table .result-row { grid-template-columns: 2.4rem minmax(0, 1fr) 5.3rem; gap: .55rem; } .results-table-head span:nth-child(4), .results-table .result-title { display: none; } .results-table .result-row { padding: .65rem .75rem; } .results-table .result-person { flex-wrap: wrap; } .results-table .admin-status { width: 100%; flex-basis: 100%; } }
 @media (max-width: 680px) { .history-heading { align-items: stretch; flex-direction: column; } .chronology::before { left: .7rem; } .chronology-year { display: flex; flex-direction: column; gap: .75rem; margin-bottom: 2rem; padding-left: 2rem; } .year-marker { justify-content: flex-start; margin-left: -2rem; } .event-card-official, .event-card-unofficial { margin-top: 0; } .event-card { padding: 1rem; } .result-toolbar { align-items: flex-start; flex-direction: column; } }
 
-/* ── Historical attendee editor ───────────────────────── */
+/* ── Historical attendee editor ────────────────────────�� */
 .admin-add-attendee { margin: 1.25rem 0 1.5rem; padding: 1.1rem 1.2rem 1rem; background: linear-gradient(145deg, rgba(31,18,6,.92), rgba(12,8,3,.8)); border: 1px solid var(--gold-dark); border-left: 3px solid var(--gold-mid); box-shadow: inset 0 0 22px rgba(0,0,0,.24); }
 .admin-section-heading { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: .95rem; }
 .admin-section-heading .eyebrow { margin: 0 0 .2rem; font-size: .62rem; }
