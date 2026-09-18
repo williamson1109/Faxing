@@ -101,7 +101,7 @@ function localEventsApi(databaseUrl: string): Plugin {
 
 export default defineConfig(({ mode }: ConfigEnv) => {
   const env = loadEnv(mode, process.cwd(), '')
-  const databaseUrl = env.DATABASE_URL || process.env.DATABASE_URL
+  const databaseUrl = env.DATABASE_URL || env.POSTGRES_URL || process.env.DATABASE_URL || process.env.POSTGRES_URL
 
   return {
     plugins: [react(), localEventsApi(databaseUrl)],
