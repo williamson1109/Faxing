@@ -84,7 +84,7 @@ export default function EventView({ event, isAdmin, onSave, onDelete }: Props) {
   return (
     <div className="event-view scroll-panel">
       <div className="event-view-heading">
-        {isAdmin && !isEditing && <div className="event-admin-toolbar"><span className="admin-access-label">Faxepave</span><button className="medieval-btn edit-event-btn" type="button" onClick={() => setIsEditing(true)}>Rediger Faxing</button></div>}
+        {!isEditing && <div className="event-admin-toolbar"><span className="admin-access-label">Faxepave</span><button className="medieval-btn edit-event-btn" type="button" onClick={() => { if (isAdmin) setIsEditing(true); else window.alert('Log ind som Faxepave for at redigere denne Faxing.') }}>Rediger Faxing</button></div>}
         {canEdit && <div className="admin-edit-notice"><span className="eyebrow">Faxepave-værktøj</span><strong>Redigering er aktiv</strong><span>Ændr eventet og tryk “Gem alle ændringer”.</span></div>}
         {canEdit ? (
           <div className="admin-edit-form">

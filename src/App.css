@@ -704,7 +704,7 @@
 .admin-login-popover { position: absolute; top: 2.8rem; right: 1rem; z-index: 4; display: flex; flex-direction: column; gap: 0.5rem; width: 220px; padding: 0.8rem; background: var(--brown-dark); border: 1px solid var(--gold-mid); box-shadow: 0 8px 25px rgba(0,0,0,0.65); }
 .admin-login-popover label, .admin-edit-form label { color: var(--parchment); font-family: var(--font-body); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; }
 .event-admin-toolbar { display: flex; align-items: center; justify-content: flex-end; gap: .75rem; margin-bottom: 1rem; padding-bottom: .75rem; border-bottom: 1px solid rgba(200,148,58,.35); }
-.admin-access-label { color: var(--gold-mid); font-family: var(--font-body); font-size: .65rem; letter-spacing: .12em; text-transform: uppercase; }
+.admin-access-label { margin-right: auto; color: var(--gold-mid); font-family: var(--font-body); font-size: .65rem; letter-spacing: .12em; text-transform: uppercase; }
 .edit-event-btn { display: block; }
 .admin-edit-notice { display: flex; align-items: baseline; flex-wrap: wrap; gap: .35rem .75rem; margin-bottom: 1rem; padding: .7rem .9rem; border: 1px solid var(--gold-mid); background: rgba(72,45,16,.5); color: var(--parchment); font-family: var(--font-text); font-size: .82rem; }
 .admin-edit-notice strong { color: var(--gold-bright); font-family: var(--font-title); font-size: 1rem; }
