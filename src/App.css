@@ -183,6 +183,16 @@
   max-width: 700px;
   margin: 0 auto;
 }
+.registration-screen .scroll-panel {
+  padding-top: 1.75rem;
+}
+.registration-screen .panel-title {
+  margin-top: 0;
+  margin-bottom: .85rem;
+}
+.registration-screen .panel-desc {
+  margin-bottom: 1.4rem;
+}
 
 .enlist-form {
   margin-bottom: 2rem;
@@ -307,7 +317,13 @@
 .remove-btn:hover { color: var(--red-bright); }
 
 .start-section {
+  margin-top: 1.5rem;
+  padding-top: 1.35rem;
   text-align: center;
+  border-top: 1px solid rgba(122,79,34,.35);
+}
+.start-section .start-btn {
+  margin-top: .25rem;
 }
 .start-btn {
   font-size: 1.1rem;
