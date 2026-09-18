@@ -11,6 +11,7 @@ interface Props {
 
 const formatTime = (ms: number) => `${Math.floor(ms / 60000)}:${String(Math.floor((ms % 60000) / 1000)).padStart(2, '0')}`
 const formatDate = (date: number) => { const timestamp = Number(date); return Number.isFinite(timestamp) && Number.isFinite(new Date(timestamp).getTime()) ? new Intl.DateTimeFormat('da-DK', { day: 'numeric', month: 'long', year: 'numeric' }).format(timestamp) : 'Ukendt dato' }
+const formatInputDate = (date: number) => { const timestamp = Number(date); return Number.isFinite(timestamp) && Number.isFinite(new Date(timestamp).getTime()) ? new Date(timestamp).toISOString().slice(0, 10) : '' }
 
 export default function EventView({ event, isAdmin, onSave, onDelete }: Props) {
   const [draft, setDraft] = useState(() => ({ ...event, contestants: Array.isArray(event.contestants) ? event.contestants : [] }))
@@ -76,7 +77,7 @@ export default function EventView({ event, isAdmin, onSave, onDelete }: Props) {
     }
   }
 
-  const sorted = [...draft.contestants].sort((a, b) => (a.finishedAt ? a.elapsed : Number.MAX_SAFE_INTEGER) - (b.finishedAt ? b.elapsed : Number.MAX_SAFE_INTEGER))
+  const sorted = [...draft.contestants].filter(Boolean).map(contestant => ({ elapsed: Number.isFinite(Number(contestant.elapsed)) ? Number(contestant.elapsed) : 0, finishedAt: contestant.finishedAt ?? null, disqualified: Boolean(contestant.disqualified), title: contestant.title ?? null, id: contestant.id, name: contestant.name || 'Ukendt deltager', gender: contestant.gender })).sort((a, b) => (a.finishedAt ? a.elapsed : Number.MAX_SAFE_INTEGER) - (b.finishedAt ? b.elapsed : Number.MAX_SAFE_INTEGER))
 
   return (
     <div className="event-view scroll-panel">
@@ -84,7 +85,7 @@ export default function EventView({ event, isAdmin, onSave, onDelete }: Props) {
         {isAdmin ? (
           <div className="admin-edit-form">
             <label>Eventnavn<input className="medieval-input" value={draft.name} onChange={eventInput => setDraft({ ...draft, name: eventInput.target.value })} /></label>
-            <label>Dato<input className="medieval-input" type="date" value={new Date(draft.date).toISOString().slice(0, 10)} onChange={eventInput => setDraft({ ...draft, date: new Date(`${eventInput.target.value}T12:00:00`).getTime() })} /></label>
+            <label>Dato<input className="medieval-input" type="date" value={formatInputDate(draft.date)} onChange={eventInput => setDraft({ ...draft, date: new Date(`${eventInput.target.value}T12:00:00`).getTime() })} /></label>
             <label className="check-label"><input type="checkbox" checked={draft.official} onChange={eventInput => setDraft({ ...draft, official: eventInput.target.checked })} /> Officiel Faxing</label>
           </div>
         ) : (
