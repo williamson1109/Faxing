@@ -9,6 +9,8 @@ import './App.css'
 
 const CONTEST_DURATION_MS = 60 * 60 * 1000
 const ADMIN_PASSWORD = 'jegElskerFaxe!jAA'
+const ACTIVE_FAXING_KEY = 'faxing-active-event'
+type ActiveFaxingDraft = { name: string; official: boolean; password: string; contestants: Contestant[]; contestStartTime: number }
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>('home')
@@ -24,6 +26,27 @@ export default function App() {
 
   useEffect(() => { const interval = setInterval(() => setNow(Date.now()), 500); return () => clearInterval(interval) }, [])
   useEffect(() => { loadEvents().then(setEvents).catch(error => console.error('[v0] Could not load events:', error)) }, [])
+  useEffect(() => {
+    const rawDraft = localStorage.getItem(ACTIVE_FAXING_KEY)
+    if (!rawDraft) return
+    try {
+      const draft = JSON.parse(rawDraft) as ActiveFaxingDraft
+      if (draft.contestStartTime && draft.name && draft.contestants?.length) {
+        setContestants(draft.contestants)
+        setContestStartTime(draft.contestStartTime)
+        setActiveEventId(JSON.stringify({ name: draft.name, official: draft.official, password: draft.password }))
+        setScreen('arena')
+      } else localStorage.removeItem(ACTIVE_FAXING_KEY)
+    } catch {
+      localStorage.removeItem(ACTIVE_FAXING_KEY)
+    }
+  }, [])
+  useEffect(() => {
+    if (!activeEventId || !contestStartTime || !contestants.length || screen === 'history' || screen === 'event') return
+    const details = JSON.parse(activeEventId) as { name: string; official: boolean; password?: string }
+    const draft: ActiveFaxingDraft = { ...details, password: details.password ?? '', contestants, contestStartTime }
+    localStorage.setItem(ACTIVE_FAXING_KEY, JSON.stringify(draft))
+  }, [activeEventId, contestStartTime, contestants, screen])
 
   const startContest = useCallback((name: string, official: boolean, password?: string) => { if (!contestants.length) return; setContestStartTime(Date.now()); setScreen('arena'); setActiveEventId(JSON.stringify({ name, official, password: password ?? '' })) }, [contestants])
   const addContestant = useCallback((name: string, gender: Contestant['gender']) => setContestants(value => [...value, { id: crypto.randomUUID(), name, gender, finishedAt: null, disqualified: false }]), [])
@@ -33,7 +56,7 @@ export default function App() {
   const editContestant = useCallback((id: string, patch: Partial<Contestant>) => setContestants(value => value.map(contestant => contestant.id === id ? { ...contestant, ...patch } : contestant)), [])
   const ranked = useCallback((): RankedContestant[] => { let king = false; let queen = false; return [...contestants].sort((a, b) => (a.finishedAt && b.finishedAt ? a.finishedAt - b.finishedAt : a.finishedAt ? -1 : b.finishedAt ? 1 : 0)).map(contestant => { const elapsed = (contestant.finishedAt ?? now) - (contestStartTime ?? now); let title: Title | null = null; if (contestant.disqualified || (!contestant.finishedAt && contestStartTime && elapsed >= CONTEST_DURATION_MS)) title = 'Hestemann'; else if (contestant.finishedAt && contestant.gender === 'male' && !king) { title = 'Faxekonge'; king = true } else if (contestant.finishedAt && contestant.gender === 'female' && !queen) { title = 'Faxedronning'; queen = true } else if (contestant.finishedAt) title = 'Faxeridder'; return { ...contestant, title, elapsed: contestant.finishedAt ? contestant.finishedAt - (contestStartTime ?? contestant.finishedAt) : Math.max(0, elapsed) } }) }, [contestants, contestStartTime, now])
 
-  const finishEvent = async () => { if (!activeEventId || !contestStartTime) return; const details = JSON.parse(activeEventId) as { name: string; official: boolean; password?: string }; try { const saved = await saveEvent({ id: crypto.randomUUID(), name: details.name, official: details.official, password: details.password, date: contestStartTime, contestants: ranked() }); setEvents(value => [saved, ...value]); setContestants([]); setContestStartTime(null); setActiveEventId(null); setScreen('history') } catch (error) { console.error('[v0] Could not save event:', error); alert('Faxingen kunne ikke gemmes. Prøv igen.') } }
+  const finishEvent = async () => { if (!activeEventId || !contestStartTime) return; const details = JSON.parse(activeEventId) as { name: string; official: boolean; password?: string }; try { const saved = await saveEvent({ id: crypto.randomUUID(), name: details.name, official: details.official, password: details.password, date: contestStartTime, contestants: ranked() }); localStorage.removeItem(ACTIVE_FAXING_KEY); setEvents(value => [saved, ...value]); setContestants([]); setContestStartTime(null); setActiveEventId(null); setScreen('history') } catch (error) { console.error('[v0] Could not save event:', error); alert('Faxingen kunne ikke gemmes. Dine deltagere er stadig gemt lokalt — prøv igen.') } }
   const activeEvent = events.find(event => event.id === activeEventId)
   const completed = events.reduce((total, event) => total + event.contestants.length, 0)
   const navigate = (next: Screen) => setScreen(next)
