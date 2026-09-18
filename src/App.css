@@ -442,7 +442,7 @@
   background: linear-gradient(160deg, rgba(44,26,10,0.97) 0%, rgba(20,12,4,0.99) 100%);
   border: 1px solid var(--brown-light);
   border-radius: 3px;
-  padding: 1.25rem 1rem;
+  padding: .75rem .7rem;
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
@@ -450,6 +450,13 @@
   transition: box-shadow 0.2s, border-color 0.2s;
 }
 .contestant-card:hover { box-shadow: 0 6px 28px rgba(0,0,0,0.7); }
+.contestant-card .card-top { gap: .35rem; }
+.contestant-card .card-gender { font-size: .9rem; }
+.contestant-card .card-name { font-size: .84rem; letter-spacing: .02em; }
+.contestant-card .card-title { font-size: .84rem; padding: .15rem 0; }
+.contestant-card .card-time { font-size: .72rem; }
+.contestant-card .beer-progress-wrap { gap: .3rem; }
+
 
 .card-gold         { border-color: var(--gold-bright); box-shadow: 0 0 20px rgba(200,148,58,0.3), 0 4px 20px rgba(0,0,0,0.5); }
 .card-rose         { border-color: #e0a0b8; box-shadow: 0 0 20px rgba(220,130,160,0.3), 0 4px 20px rgba(0,0,0,0.5); }
@@ -539,9 +546,22 @@
 .undo-finish-btn { padding: .35rem .6rem; font-size: .72rem; opacity: .88; }
 .card-actions {
   display: flex;
-  gap: 0.5rem;
-  margin-top: 0.25rem;
-}
+  gap: .25rem;
+  margin-top: .15rem;
+  min-width: 0;
+  }
+.contestant-card .card-actions .medieval-btn {
+  min-width: 0;
+  width: 100%;
+  padding: .28rem .25rem;
+  font-size: .58rem;
+  line-height: 1.15;
+  letter-spacing: .02em;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  }
+.contestant-card .card-actions .finish-btn { flex: 1; }
+.contestant-card .card-actions .dnf-btn { flex: 1; }
 .finish-btn {
   flex: 2;
   background: linear-gradient(180deg, #2a6030 0%, #1a3d1e 100%);
