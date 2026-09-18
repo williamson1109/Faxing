@@ -4,7 +4,7 @@ import type { FaxingEvent, RankedContestant } from '../types'
 interface Props {
   event: FaxingEvent
   isAdmin: boolean
-  onBack: () => void
+  onBack?: () => void
   onSave: (event: FaxingEvent) => Promise<void>
   onDelete: (id: string) => Promise<void>
 }
@@ -12,7 +12,7 @@ interface Props {
 const formatTime = (ms: number) => `${Math.floor(ms / 60000)}:${String(Math.floor((ms % 60000) / 1000)).padStart(2, '0')}`
 const formatDate = (date: number) => new Intl.DateTimeFormat('da-DK', { day: 'numeric', month: 'long', year: 'numeric' }).format(date)
 
-export default function EventView({ event, isAdmin, onBack, onSave, onDelete }: Props) {
+export default function EventView({ event, isAdmin, onSave, onDelete }: Props) {
   const [draft, setDraft] = useState(event)
   const [saving, setSaving] = useState(false)
   const [newName, setNewName] = useState('')
@@ -79,7 +79,6 @@ export default function EventView({ event, isAdmin, onBack, onSave, onDelete }: 
 
   return (
     <div className="event-view scroll-panel">
-      <button className="back-link" onClick={onBack}>Tilbage til krøniken</button>
       <div className="event-view-heading">
         {isAdmin ? (
           <div className="admin-edit-form">
@@ -112,12 +111,12 @@ export default function EventView({ event, isAdmin, onBack, onSave, onDelete }: 
       )}
 
       <div className="result-toolbar"><span>Resultater</span><span className="result-count">{sorted.length} deltagere</span></div>
-      <div className="results-table" role="table" aria-label={`Resultater for ${draft.name}`}><div className="results-table-head" role="row"><span>Plads</span><span>Deltager</span><span>Drikketid</span><span>Titel</span></div>{sorted.map((contestant, index) => <ResultRow key={contestant.id} contestant={contestant} index={index} isAdmin={isAdmin} onUpdate={update} />)}</div>
+      <div className="results-table" role="table" aria-label={`Resultater for ${draft.name}`}><div className="results-table-head" role="row"><span>Plads</span><span>Deltager</span><span>Drikketid</span><span aria-label="Hæder" /></div>{sorted.map((contestant, index) => <ResultRow key={contestant.id} contestant={contestant} index={index} isAdmin={isAdmin} onUpdate={update} />)}</div>
       {isAdmin && <div className="admin-actions"><button className="medieval-btn" onClick={save} disabled={saving}>{saving ? 'Gemmer…' : 'Gem alle ændringer'}</button>{savedMessage && <span className="save-message" role="status">{savedMessage}</span>}<button className="medieval-btn danger-btn" onClick={() => onDelete(draft.id)}>Slet Faxing</button></div>}
     </div>
   )
 }
 
 function ResultRow({ contestant: c, index, isAdmin, onUpdate }: { contestant: RankedContestant; index: number; isAdmin: boolean; onUpdate: (id: string, patch: Partial<RankedContestant>) => void }) {
-  return <div className={`result-row ${c.title === 'Faxekonge' || c.title === 'Faxedronning' ? 'royal-result' : ''}`} role="row"><span className="result-rank" role="cell">{index + 1}</span><span className="result-person" role="cell">{isAdmin ? <input aria-label={`Navn på deltager ${index + 1}`} className="medieval-input admin-name-input" value={c.name} onChange={event => onUpdate(c.id, { name: event.target.value })} /> : <span className="result-name">{c.name}</span>}{isAdmin && <select aria-label={`Status for ${c.name}`} className="medieval-input admin-status" value={c.disqualified ? 'out' : c.finishedAt ? 'done' : 'active'} onChange={event => onUpdate(c.id, event.target.value === 'out' ? { disqualified: true, finishedAt: null } : event.target.value === 'done' ? { disqualified: false, finishedAt: c.finishedAt ?? Date.now() } : { disqualified: false, finishedAt: null })}><option value="done">Færdig</option><option value="active">Ikke færdig</option><option value="out">Hestemann</option></select>}</span><strong role="cell" className={c.title === 'Hestemann' || c.disqualified ? 'result-time result-shame' : 'result-time'}>{c.title === 'Hestemann' || c.disqualified ? 'Hestemann' : formatTime(c.elapsed)}</strong><span role="cell" className="result-title">{c.title && c.title !== 'Faxeridder' ? c.title : '—'}</span></div>
+  return <div className={`result-row ${c.title === 'Faxekonge' || c.title === 'Faxedronning' ? 'royal-result' : ''}`} role="row"><span className="result-rank" role="cell">{index + 1}</span><span className="result-person" role="cell">{isAdmin ? <input aria-label={`Navn på deltager ${index + 1}`} className="medieval-input admin-name-input" value={c.name} onChange={event => onUpdate(c.id, { name: event.target.value })} /> : <span className="result-name">{c.name}</span>}{isAdmin && <select aria-label={`Status for ${c.name}`} className="medieval-input admin-status" value={c.disqualified ? 'out' : c.finishedAt ? 'done' : 'active'} onChange={event => onUpdate(c.id, event.target.value === 'out' ? { disqualified: true, finishedAt: null } : event.target.value === 'done' ? { disqualified: false, finishedAt: c.finishedAt ?? Date.now() } : { disqualified: false, finishedAt: null })}><option value="done">Færdig</option><option value="active">Ikke færdig</option><option value="out">Hestemann</option></select>}</span><strong role="cell" className={c.title === 'Hestemann' || c.disqualified ? 'result-time result-shame' : 'result-time'}>{c.title === 'Hestemann' || c.disqualified ? 'Hestemann' : formatTime(c.elapsed)}</strong><span role="cell" className="result-title">{c.title === 'Faxekonge' || c.title === 'Faxedronning' ? <span className="royal-crown" aria-label={c.title} title={c.title}>♛</span> : '—'}</span></div>
 }
