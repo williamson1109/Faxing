@@ -562,6 +562,17 @@
   }
 .contestant-card .card-actions .finish-btn { flex: 1; }
 .contestant-card .card-actions .dnf-btn { flex: 1; }
+/* Keep progress actions compact in every arena, including official Faxinger. */
+.contestant-card .card-actions button.finish-btn,
+.contestant-card .card-actions button.dnf-btn {
+  flex: 1 1 0;
+  min-height: 0;
+  height: auto;
+  padding: .28rem .25rem;
+  font-size: .58rem;
+  line-height: 1.15;
+  white-space: normal;
+}
 .finish-btn {
   flex: 2;
   background: linear-gradient(180deg, #2a6030 0%, #1a3d1e 100%);
