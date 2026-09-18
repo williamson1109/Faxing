@@ -536,6 +536,7 @@
 }
 
 /* Card actions */
+.undo-finish-btn { padding: .35rem .6rem; font-size: .72rem; opacity: .88; }
 .card-actions {
   display: flex;
   gap: 0.5rem;
